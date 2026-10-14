@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#ffd6e7">
+  <title>Dành cho Man An 💗</title>
+  <meta name="description" content="Một góc nhỏ dành riêng cho bà chã Man An.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Dancing+Script:wght@500;700&family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Nền tim trôi (canvas nhẹ) -->
+  <canvas id="hearts-canvas" aria-hidden="true"></canvas>
+
+  <!-- ============ MÀN HÌNH KHÓA ============ -->
+  <section id="lock-screen" class="screen lock-screen is-active" aria-label="Màn hình nhập mật khẩu">
+    <div class="lock-card">
+      <div class="lock-heart" aria-hidden="true"><i class="fa-solid fa-heart"></i></div>
+      <div class="lock-avatar">
+        <img src="images/anh6.jpg" alt="Man An">
+      </div>
+      <h1 class="lock-title">Hi bà chã 👋</h1>
+      <p class="lock-sub">Nhập mật khẩu để mở quà nè</p>
+
+      <div class="pin-dots" id="pin-dots" aria-label="Mật khẩu 4 số">
+        <span class="pin-dot"></span>
+        <span class="pin-dot"></span>
+        <span class="pin-dot"></span>
+        <span class="pin-dot"></span>
+      </div>
+      <p class="pin-error" id="pin-error" role="alert"></p>
+
+      <div class="keypad" id="keypad">
+        <button class="key" data-key="1" type="button">1</button>
+        <button class="key" data-key="2" type="button">2</button>
+        <button class="key" data-key="3" type="button">3</button>
+        <button class="key" data-key="4" type="button">4</button>
+        <button class="key" data-key="5" type="button">5</button>
+        <button class="key" data-key="6" type="button">6</button>
+        <button class="key" data-key="7" type="button">7</button>
+        <button class="key" data-key="8" type="button">8</button>
+        <button class="key" data-key="9" type="button">9</button>
+        <button class="key key-hint" data-action="hint" type="button" aria-label="Gợi ý"><i class="fa-regular fa-lightbulb"></i></button>
+        <button class="key" data-key="0" type="button">0</button>
+        <button class="key key-del" data-action="del" type="button" aria-label="Xoá"><i class="fa-solid fa-delete-left"></i></button>
+      </div>
+      <p class="lock-hint" id="lock-hint" hidden>Gợi ý: ngày tháng sinh nhật của bé đó 🎂</p>
+    </div>
+  </section>
+
+  <!-- Hiệu ứng mở khoá: hoa nở phủ màn hình -->
+  <div id="unlock-burst" class="unlock-burst" aria-hidden="true"></div>
+
+  <!-- ============ APP CHÍNH ============ -->
+  <div id="app" class="app" hidden>
+
+    <!-- Thanh trên: nhạc + về trang chủ -->
+    <header class="topbar">
+      <button class="icon-btn" id="btn-home" type="button" aria-label="Về trang chủ"><i class="fa-solid fa-house"></i></button>
+      <span class="topbar-title">Man An <i class="fa-solid fa-heart"></i></span>
+      <button class="icon-btn music-toggle" id="btn-music" type="button" aria-label="Bật / tắt nhạc" aria-pressed="false">
+        <i class="fa-solid fa-music"></i>
+        <span class="music-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+    </header>
+
+    <!-- ===== TRANG CHỦ ===== -->
+    <section id="home-screen" class="screen page is-active" data-page="home">
+      <div class="hero">
+        <div class="hero-photo">
+          <img src="images/anh6.jpg" alt="Man An">
+          <span class="sticker sticker-1">💗</span>
+          <span class="sticker sticker-2">🌸</span>
+          <span class="sticker sticker-3">✨</span>
+        </div>
+        <h2 class="hero-name">Man An</h2>
+        <p class="hero-tag">bà chã của tui 🐱</p>
+      </div>
+
+      <!-- Lịch tình yêu -->
+      <div class="card calendar-card" id="calendar-card">
+        <div class="calendar-head">
+          <button class="icon-btn small" id="cal-prev" type="button" aria-label="Tháng trước"><i class="fa-solid fa-chevron-left"></i></button>
+          <span class="calendar-month" id="cal-month"></span>
+          <button class="icon-btn small" id="cal-next" type="button" aria-label="Tháng sau"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="calendar-week">
+          <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+        </div>
+        <div class="calendar-grid" id="cal-grid"></div>
+        <p class="calendar-note" id="cal-note">Chạm vào một ngày để thả tim 💌</p>
+      </div>
+
+      <!-- Menu 4 ô -->
+      <nav class="menu-grid" aria-label="Menu chính">
+        <button class="menu-card" data-go="music" type="button">
+          <span class="menu-icon"><i class="fa-solid fa-music"></i></span>
+          <span class="menu-label">Nhạc</span>
+        </button>
+        <button class="menu-card" data-go="letter" type="button">
+          <span class="menu-icon"><i class="fa-solid fa-envelope"></i></span>
+          <span class="menu-label">Thư</span>
+        </button>
+        <button class="menu-card" data-go="album" type="button">
+          <span class="menu-icon"><i class="fa-solid fa-images"></i></span>
+          <span class="menu-label">Album</span>
+        </button>
+        <button class="menu-card" data-go="cube" type="button">
+          <span class="menu-icon"><i class="fa-solid fa-gift"></i></span>
+          <span class="menu-label">Hộp ảnh 3D</span>
+        </button>
+      </nav>
+
+      <p class="home-foot">chạm vào bất kỳ đâu để thả tim 💕</p>
+    </section>
+
+    <!-- ===== NHẠC ===== -->
+    <section id="music-screen" class="screen page" data-page="music">
+      <div class="card player-card">
+        <div class="disc-wrap">
+          <div class="disc" id="disc">
+            <img src="images/anh4.jpg" alt="Đĩa nhạc">
+          </div>
+          <div class="disc-arm" aria-hidden="true"></div>
+        </div>
+        <h3 class="track-title" id="track-title">—</h3>
+        <p class="track-artist" id="track-artist">—</p>
+
+        <div class="progress" id="progress">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="time-row"><span id="time-cur">0:00</span><span id="time-dur">0:00</span></div>
+
+        <div class="controls">
+          <button class="ctrl" id="ctrl-prev" type="button" aria-label="Bài trước"><i class="fa-solid fa-backward-step"></i></button>
+          <button class="ctrl ctrl-play" id="ctrl-play" type="button" aria-label="Phát / dừng"><i class="fa-solid fa-play"></i></button>
+          <button class="ctrl" id="ctrl-next" type="button" aria-label="Bài sau"><i class="fa-solid fa-forward-step"></i></button>
+        </div>
+
+        <ul class="playlist" id="playlist"></ul>
+      </div>
+    </section>
+
+    <!-- ===== ALBUM ===== -->
+    <section id="album-screen" class="screen page" data-page="album">
+      <h2 class="page-title">Album của bé 📸</h2>
+      <p class="page-sub">chạm vào ảnh để xem lớn</p>
+      <div class="album-grid" id="album-grid"></div>
+    </section>
+
+    <!-- ===== HỘP ẢNH 3D ===== -->
+    <section id="cube-screen" class="screen page" data-page="cube">
+      <h2 class="page-title">Hộp ảnh 3D 🎁</h2>
+      <p class="page-sub">kéo để xoay · chạm vào ảnh để xem lớn</p>
+      <div class="cube-stage" id="cube-stage">
+        <div class="cube-ring" id="cube-ring"></div>
+      </div>
+      <p class="cube-caption">Hãy luôn vui vẻ như vầy nha, bà chã ✨</p>
+    </section>
+
+    <!-- ===== THƯ ===== -->
+    <section id="letter-screen" class="screen page" data-page="letter">
+      <div class="envelope-wrap" id="envelope-wrap">
+        <button class="envelope" id="envelope" type="button" aria-label="Mở thư">
+          <div class="env-back"></div>
+          <div class="env-letter">
+            <span>💌</span>
+          </div>
+          <div class="env-front"></div>
+          <div class="env-flap"></div>
+          <div class="env-seal"><i class="fa-solid fa-heart"></i></div>
+        </button>
+        <p class="env-hint" id="env-hint">chạm vào để mở thư</p>
+      </div>
+
+      <article class="card letter-paper" id="letter-paper" hidden>
+        <div class="letter-corner tl">🌸</div>
+        <div class="letter-corner br">🌸</div>
+        <h3 class="letter-heading">Gửi bà chã Man An,</h3>
+        <div class="letter-body" id="letter-body"></div>
+        <p class="letter-sign" id="letter-sign" hidden>— người thương bé 💗</p>
+        <button class="btn-pink" id="letter-replay" type="button" hidden><i class="fa-solid fa-rotate-left"></i> Đọc lại</button>
+      </article>
+    </section>
+
+    <!-- Thanh điều hướng dưới (mobile) -->
+    <nav class="bottombar" aria-label="Điều hướng">
+      <button class="nav-btn is-active" data-go="home" type="button"><i class="fa-solid fa-house"></i><span>Nhà</span></button>
+      <button class="nav-btn" data-go="album" type="button"><i class="fa-solid fa-images"></i><span>Album</span></button>
+      <button class="nav-btn" data-go="cube" type="button"><i class="fa-solid fa-cube"></i><span>3D</span></button>
+      <button class="nav-btn" data-go="letter" type="button"><i class="fa-solid fa-envelope"></i><span>Thư</span></button>
+      <button class="nav-btn" data-go="music" type="button"><i class="fa-solid fa-music"></i><span>Nhạc</span></button>
+    </nav>
+  </div>
+
+  <!-- ============ LIGHTBOX ============ -->
+  <div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Xem ảnh">
+    <button class="lb-close" id="lb-close" type="button" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+    <button class="lb-nav lb-prev" id="lb-prev" type="button" aria-label="Ảnh trước"><i class="fa-solid fa-chevron-left"></i></button>
+    <figure class="lb-figure">
+      <img id="lb-img" src="" alt="">
+      <figcaption id="lb-cap"></figcaption>
+      <span class="lb-sticker s1">💗</span>
+      <span class="lb-sticker s2">⭐</span>
+    </figure>
+    <button class="lb-nav lb-next" id="lb-next" type="button" aria-label="Ảnh sau"><i class="fa-solid fa-chevron-right"></i></button>
+    <div class="lb-counter" id="lb-counter"></div>
+  </div>
+
+  <!-- Toast nhỏ -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Audio -->
+  <audio id="bgm" preload="none"></audio>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
